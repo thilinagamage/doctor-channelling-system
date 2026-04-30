@@ -9,4 +9,4 @@ cd channelling-system
 docker compose up --build
 
 Open http://localhost:8080 in your browser.
-Admin: admin@channelling.com / Admin@1234
+Admin: admin@channelling.com / password123
