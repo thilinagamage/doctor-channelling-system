@@ -84,11 +84,7 @@ $flash = getFlashMessage();
                 <p>Don't have an account? <a href="register.php">Register here</a></p>
             </div>
             
-            <div style="margin-top: 30px; padding: 15px; background: var(--bg-light); border-radius: var(--radius); font-size: 0.875rem;">
-                <p><strong>Demo Accounts:</strong></p>
-                <p>Email: john@example.com</p>
-                <p>Password: password123</p>
-            </div>
+
         </div>
     </div>
 </section>

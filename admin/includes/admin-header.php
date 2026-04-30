@@ -1,6 +1,6 @@
 <?php
 session_start();
-$base_url = '/channelling-system/';
+$base_url = '/';
 require_once __DIR__ . '/../../config/db.php';
 
 if (!isset($_SESSION['admin_id'])) {

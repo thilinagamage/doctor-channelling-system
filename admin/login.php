@@ -159,12 +159,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <form action="login.php" method="POST">
             <div class="form-group">
                 <label for="email">Email Address</label>
-                <input type="email" id="email" name="email" required placeholder="admin@channelling.com">
+                <input type="email" id="email" name="email" required placeholder="Email">
             </div>
             
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" required placeholder="Admin@1234">
+                <input type="password" id="password" name="password" required placeholder="Password">
             </div>
             
             <button type="submit" class="btn-primary">
@@ -172,11 +172,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </button>
         </form>
         
-        <div class="demo-info">
-            <p><strong>Demo Account:</strong></p>
-            <p>Email: admin@channelling.com</p>
-            <p>Password: password123</p>
-        </div>
     </div>
 </body>
 </html>

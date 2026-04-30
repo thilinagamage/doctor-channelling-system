@@ -1,5 +1,5 @@
 <?php
-$base_url = '/channelling-system/';
+$base_url = '/';
 session_start();
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/auth.php';
