@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: channelling-php
+  namespace: channelling
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: channelling-php
+  template:
+    metadata:
+      labels:
+        app: channelling-php
+    spec:
+      containers:
+        - name: channelling-php
+          image: thilinagamage/channelling-system:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: channelling-config
+                  key: DB_HOST
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: channelling-config
+                  key: DB_NAME
+            - name: DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: channelling-config
+                  key: DB_USER
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: channelling-secret
+                  key: DB_PASS
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: channelling-php-service
+  namespace: channelling
+spec:
+  selector:
+    app: channelling-php
+  ports:
+    - port: 80
+      targetPort: 80
+  type: NodePort

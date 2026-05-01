@@ -1,0 +1,20 @@
+replicaCount: 2
+
+image:
+  repository: thilinagamage/channelling-system
+  tag: latest
+  pullPolicy: Always
+
+database:
+  host: mysql-service
+  name: channelling_db
+  user: channelling_user
+  password: YourStrongPassword123!
+
+hpa:
+  minReplicas: 2
+  maxReplicas: 10
+  cpuUtilization: 70
+
+ingress:
+  host: channelling.local
