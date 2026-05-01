@@ -1,2 +1,6 @@
 .env
 db-data/
+
+terraform/deployer_key
+terraform/.terraform/
+terraform/terraform.tfvars

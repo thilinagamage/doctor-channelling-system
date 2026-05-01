@@ -1,0 +1,73 @@
+---
+- name: Configure channelling system server
+  hosts: webserver
+  become: yes
+
+  vars:
+    docker_image: "thilinagamage/channelling-system:latest"
+    db_host: "channelling-db.clga0q6k0osj.ap-south-1.rds.amazonaws.com"
+    db_name: "channelling_db"
+    db_user: "channelling_user"
+    db_pass: "YourStrongPassword123!"
+
+  tasks:
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install required packages
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+        state: present
+
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Install Docker
+      apt:
+        name: docker-ce
+        state: present
+
+    - name: Start and enable Docker
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Pull latest Docker image
+      docker_image:
+        name: "{{ docker_image }}"
+        source: pull
+        force_source: yes
+
+    - name: Stop existing container
+      docker_container:
+        name: channelling-php
+        state: absent
+      ignore_errors: yes
+
+    - name: Run channelling system container
+      docker_container:
+        name: channelling-php
+        image: "{{ docker_image }}"
+        state: started
+        restart_policy: always
+        ports:
+          - "80:80"
+        env:
+          DB_HOST: "{{ db_host }}"
+          DB_NAME: "{{ db_name }}"
+          DB_USER: "{{ db_user }}"
+          DB_PASS: "{{ db_pass }}"
