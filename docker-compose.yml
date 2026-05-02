@@ -14,6 +14,7 @@ services:
       - DB_NAME=channelling_db
       - DB_USER=channelling_user
       - DB_PASS=channelling_pass
+    restart: always
 
   nginx:
     image: nginx:alpine
@@ -26,6 +27,7 @@ services:
       - php-app
     networks:
       - channelling-net
+    restart: always
 
   mysql:
     image: mysql:8.0
@@ -44,9 +46,76 @@ services:
     networks:
       - channelling-net
 
+  mysql-exporter:
+    image: prom/mysqld-exporter:latest
+    container_name: channelling-mysql-exporter
+    ports:
+      - "9104:9104"
+    command:
+      - "--mysqld.address=channelling-mysql:3306"
+      - "--mysqld.username=channelling_user"
+    environment:
+      - MYSQLD_EXPORTER_PASSWORD=channelling_pass
+    networks:
+      - channelling-net
+    depends_on:
+      - mysql
+    restart: always
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: channelling-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./monitoring/alert_rules.yml:/etc/prometheus/alert_rules.yml
+    networks:
+      - channelling-net
+    restart: always
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: channelling-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin123
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+    networks:
+      - channelling-net
+    depends_on:
+      - prometheus
+    restart: always
+
+  loki:
+    image: grafana/loki:latest
+    container_name: channelling-loki
+    ports:
+      - "3100:3100"
+    networks:
+      - channelling-net
+    restart: always
+
+  promtail:
+    image: grafana/promtail:latest
+    container_name: channelling-promtail
+    volumes:
+      - /var/log:/var/log
+      - ./monitoring/promtail.yml:/etc/promtail/config.yml
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    networks:
+      - channelling-net
+    depends_on:
+      - loki
+    restart: always
+
 networks:
   channelling-net:
     driver: bridge
 
 volumes:
   db-data:
+  grafana-data:

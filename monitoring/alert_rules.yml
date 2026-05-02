@@ -1,0 +1,30 @@
+groups:
+  - name: channelling_alerts
+    rules:
+
+      - alert: HighErrorRate
+        expr: rate(mysql_global_status_connection_errors_total[5m]) > 5
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High MySQL connection error rate"
+          description: "MySQL error rate is above 5 errors/sec"
+
+      - alert: MySQLDown
+        expr: mysql_up == 0
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "MySQL is down"
+          description: "MySQL container is not responding"
+
+      - alert: HighMemoryUsage
+        expr: (mysql_global_status_innodb_buffer_pool_bytes_data / mysql_global_variables_innodb_buffer_pool_size) * 100 > 90
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High MySQL memory usage"
+          description: "MySQL buffer pool usage is above 90%"
