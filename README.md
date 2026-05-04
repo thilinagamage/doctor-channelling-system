@@ -48,4 +48,4 @@ Visit `http://localhost:8080`
 
 ---
 
-**Author:** M.A.D.P.D. Mellawa Arachchi — DIT1025090
+**Author:** Thilina Gamage
